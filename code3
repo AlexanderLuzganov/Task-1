@@ -1,0 +1,55 @@
+#include <iostream>
+#include <fstream>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
+void fill_values(json& tests, const json& values) {
+    if (tests.is_array()) {
+        for (auto& test : tests) {
+            if (test.contains("id")) {
+                int test_id = test["id"];
+                for (const auto& value : values["values"]) {
+                    if (value["id"] == test_id) {
+                        test["value"] = value["value"];
+                        break;
+                    }
+                }
+                if (test.contains("values")) {
+                    fill_values(test["values"], values);
+                }
+            }
+        }
+    }
+}
+
+int main(int argc, char* argv[]) {
+    if (argc != 4) {
+        std::cerr << "Usage: " << argv[0] << " <tests_file> <values_file> <report_file>\n";
+        return 1;
+    }
+
+    std::ifstream tests_file(argv[1]);
+    std::ifstream values_file(argv[2);
+    std::ofstream report_file(argv[3]);
+
+    if (!tests_file.is_open() || !values_file.is_open() || !report_file.is_open()) {
+        std::cerr << "Failed to open input/output files\n";
+        return 1;
+    }
+
+    json tests_json;
+    json values_json;
+    tests_file >> tests_json;
+    values_file >> values_json;
+
+    fill_values(tests_json["tests"], values_json);
+
+    report_file << tests_json.dump(4); // Pretty print with 4 spaces
+
+    tests_file.close();
+    values_file.close();
+    report_file.close();
+
+    return 0;
+}
