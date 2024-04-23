@@ -1,0 +1,36 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <fstream>
+
+int min_moves_to_same_number(std::vector<int>& nums) {
+    int n = nums.size();
+    std::sort(nums.begin(), nums.end());
+    int median = (n % 2 != 0) ? nums[n / 2] : (nums[n / 2 - 1] + nums[n / 2]) / 2;
+    int moves = 0;
+    for (int num : nums) {
+        moves += std::abs(num - median);
+    }
+    return moves;
+}
+
+std::vector<int> read_array_from_file(const std::string& filename) {
+    std::ifstream file(filename);
+    std::vector<int> nums;
+    int num;
+    while (file >> num) {
+        nums.push_back(num);
+    }
+    return nums;
+}
+
+int main() {
+    std::vector<int> nums;
+        std::string filename;
+        std::cout << "Введите имя файла: ";
+        std::cin >> filename;
+        nums = read_array_from_file(filename);
+    int moves = min_moves_to_same_number(nums);
+    std::cout << "Минимальное количество ходов: " << moves << std::endl;
+    return 0;
+}
