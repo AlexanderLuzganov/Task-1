@@ -1,0 +1,32 @@
+#include <iostream>
+#include <vector>
+
+void printCircularArray(int n, int m) {
+    std::vector<int> circularArray;
+    for (int i = 1; i <= n; ++i) {
+        circularArray.push_back(i);
+    }
+
+    int currentIndex = 0;
+    int timer = 0;
+    for (int i = 0; i < n; ++i) {
+        if (circularArray[currentIndex] == 1 && timer == 1) break;
+        timer = 1;
+        std::cout << circularArray[currentIndex] << " ";
+        currentIndex = (currentIndex + m - 1) % n;
+    }
+
+    std::cout << std::endl;
+}
+
+int main() {
+    int n, m;
+    std::cout << "Enter n: ";
+    std::cin >> n;
+    std::cout << "Enter m: ";
+    std::cin >> m;
+
+    printCircularArray(n, m);
+
+    return 0;
+}
